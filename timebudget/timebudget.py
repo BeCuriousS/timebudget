@@ -122,6 +122,8 @@ class TimeBudgetRecorder():
                     f"{res['name']:>60s}:{pct: 6.1f}% {avg: 8.2f}ms/cyc @{avg_cnt: 8.1f} calls/cyc")
         else:
             self._print("timebudget report...")
+            if not self.is_active:
+                self._print("timebudget is set inactive.")
             for res in results:
                 self._print(
                     f"{res['name']:>60s}:{res['avg']: 10.2f}ms for {res['cnt']: 6d} calls with overall {res['cnt']*res['avg']: 10.2f}")
@@ -166,10 +168,12 @@ class _timeblock():
         self.quiet = quiet
 
     def __enter__(self):
-        _default_recorder.start(self.name)
+        if _default_recorder.is_active:
+            _default_recorder.start(self.name)
 
     def __exit__(self, typ, val, trace):
-        _default_recorder.end(self.name, self.quiet)
+        if _default_recorder.is_active:
+            _default_recorder.end(self.name, self.quiet)
 
 
 def annotate_or_with_block(func_or_name: Union[Callable, str], quiet: Optional[bool] = None):
