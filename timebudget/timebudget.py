@@ -25,6 +25,7 @@ import sys
 import time
 from typing import Callable, Optional, Union
 import warnings
+import threading
 
 __all__ = [
     'timebudget',
@@ -147,7 +148,9 @@ def annotate(func: Callable, quiet: Optional[bool]):
         if len(args):
             if hasattr(args[0], '__class__'):
                 cl_name = args[0].__class__.__name__ + '.'
-        name = cl_name + func_name
+        # add thread id to allow multiple threads executing the same function
+        t_id = '_' + str(threading.get_native_id())
+        name = cl_name + func_name + t_id
         if _default_recorder.is_active:
             _default_recorder.start(name)
         try:
@@ -164,7 +167,9 @@ class _timeblock():
     """
 
     def __init__(self, name: str, quiet: Optional[bool]):
-        self.name = name
+        # add thread id to allow multiple threads executing the same function
+        t_id = '_' + str(threading.get_native_id())
+        self.name = name + t_id
         self.quiet = quiet
 
     def __enter__(self):
