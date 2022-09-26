@@ -127,7 +127,7 @@ class TimeBudgetRecorder():
                 self._print("timebudget is set inactive.")
             for res in results:
                 self._print(
-                    f"{res['name']:>60s}:{res['avg']: 10.2f}ms for {res['cnt']: 6d} calls with overall {res['cnt']*res['avg']: 10.2f}")
+                    f"{res['name']:>60s}:{res['avg']: 10.2f}ms for {res['cnt']: 6d} calls with overall {res['cnt']*res['avg']: 16.2f}ms")
         if reset:
             self.reset()
 
